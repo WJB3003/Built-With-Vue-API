@@ -1,4 +1,4 @@
-from flask import request, jsonify, abort
+from flask import request, jsonify, abort, json
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 
@@ -59,4 +59,21 @@ def create_app(config_name):
             response = jsonify(results)
             response.status_code = 200
             return response
+    
+    @app.route('/projects/status/', methods=['PUT'])
+    def project_status():
+
+        if request.method == "PUT": 
+            ids = request.data.get('ids', '')
+            status = str(request.data.get('status', ''))
+            results = [];
+            for id in ids:
+                project = Project.query.filter_by(id=id).first()
+                project.status = status
+                project.save()
+                results.append(project.to_dict())
+            response = jsonify(results)
+            response.status_code = 200
+            return response
+
     return app
