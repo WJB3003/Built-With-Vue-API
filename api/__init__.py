@@ -1,6 +1,7 @@
 from flask import request, jsonify, abort, json
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 # local import
 from instance.config import app_config
@@ -16,6 +17,10 @@ def create_app(config_name):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    #enable cors
+    CORS(app)
+    
     db.init_app(app)
 
     @app.route('/projects/', methods=['POST', 'GET'])
@@ -73,6 +78,17 @@ def create_app(config_name):
                 project.save()
                 results.append(project.to_dict())
             response = jsonify(results)
+            response.status_code = 200
+            return response
+
+    @app.route('/projects/<int:id>', methods=['GET'])
+    def project_detail(id, **kwargs):
+        project = Project.query.filter_by(id=id).first()
+        if not project:
+            abort(404)
+
+        if request.method == "GET":
+            response = jsonify(project.to_dict())
             response.status_code = 200
             return response
 
