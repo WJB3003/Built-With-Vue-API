@@ -20,7 +20,7 @@ def create_app(config_name):
     
     #enable cors
     CORS(app)
-    
+
     db.init_app(app)
 
     @app.route('/projects/', methods=['POST', 'GET'])
@@ -82,8 +82,8 @@ def create_app(config_name):
             return response
 
     @app.route('/projects/<int:id>', methods=['GET'])
-    def project_detail(id, **kwargs):
-        project = Project.query.filter_by(id=id).first()
+    def project_detail(slug, **kwargs):
+        project = Project.query.filter_by(slug=slug).first()
         if not project:
             abort(404)
 
