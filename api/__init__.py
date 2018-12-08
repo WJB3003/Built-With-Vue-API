@@ -81,7 +81,7 @@ def create_app(config_name):
             response.status_code = 200
             return response
 
-    @app.route('/projects/<int:id>', methods=['GET'])
+    @app.route('/projects/<string:slug>', methods=['GET'])
     def project_detail(slug, **kwargs):
         project = Project.query.filter_by(slug=slug).first()
         if not project:
